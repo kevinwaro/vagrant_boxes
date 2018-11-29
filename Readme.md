@@ -23,7 +23,7 @@ For a debian box:
 
     cd vagrant_boxes/debian
     packer build build-debian.json -var-file=[jessie|stretch].json
-    vagrant box add --name=debian[7|8] output/vagrant/debian[7|8].box
+    vagrant box add --name=debian[8|9] output/vagrant/debian[8|9].box
 
 For a centos box:
 
