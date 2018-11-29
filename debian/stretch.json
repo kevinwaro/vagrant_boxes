@@ -1,0 +1,6 @@
+{
+    "vm_name": "debian9",
+    "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/9.5.0/amd64/iso-cd/debian-9.5.0-amd64-netinst.iso",
+    "iso_checksum": "f8446a84356a6bcbf79201cc9f46063f",
+    "iso_checksum_type": "md5"
+}

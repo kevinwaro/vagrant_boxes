@@ -1,0 +1,53 @@
+{
+  "variables": {
+    "ssh_name": "vagrant",
+    "ssh_pass": "vagrant"
+  },
+
+  "builders": [{
+    "type": "virtualbox-iso",
+    "guest_os_type": "RedHat_64",
+
+    "disk_size": 8192,
+
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+
+    "output_directory": "output/packer",
+
+    "guest_additions_path": "/var/tmp/VBoxGuestAdditions.iso",
+
+    "http_directory": "./kickstarts",
+    "http_port_min": 9001,
+    "http_port_max": 9001,
+
+    "ssh_username": "{{user `ssh_name`}}",
+    "ssh_password": "{{user `ssh_pass`}}",
+    "ssh_wait_timeout": "40m",
+
+    "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+    "boot_command": [
+      "<tab>",
+      " text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-kickstart.ks",
+      "<enter>"
+    ]
+  }],
+
+  "provisioners": [{
+    "type": "shell",
+    "scripts": ["./scripts/vagrant_setup.sh"],
+    "execute_command": "echo '{{ user `ssh_name` }}' | sudo -S /bin/bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "scripts": ["./scripts/cleanup.sh"],
+    "execute_command": "echo '{{ user `ssh_name` }}' | sudo -S /bin/bash '{{ .Path }}'"
+  }],
+
+  "post-processors": [{
+    "type": "vagrant",
+    "output": "output/vagrant/{{ user `vm_name` }}.box"
+  }]
+}
