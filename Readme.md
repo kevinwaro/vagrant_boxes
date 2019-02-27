@@ -22,13 +22,13 @@ Once all the required dependencies installed, you can start to build the distrib
 For a debian box:
 
     cd vagrant_boxes/debian
-    packer build build-debian.json -var-file=[jessie|stretch].json
+    packer build -var-file=[jessie|stretch].json build-debian.json
     vagrant box add --name=debian[8|9] output/vagrant/debian[8|9].box
 
 For a centos box:
 
     cd vagrant_boxes/centos
-    packer build build-centos.json -var-file=centos7.json
+    packer build -var-file=centos7.json build-centos.json
     vagrant box add --name=centos7 output/vagrant/centos7.box
 
 You can now start to use your box !
