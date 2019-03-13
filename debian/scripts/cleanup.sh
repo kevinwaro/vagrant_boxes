@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # This script removes all the useless packages from the VM before to upload it in Vagrant
 
@@ -17,6 +17,7 @@ libavahi-common-data
 nfs-common
 libnfsidmap2
 rpcbind
+powertop
 EOF
 
 # If the  package is present then, delete it
