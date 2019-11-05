@@ -85,35 +85,3 @@ kernel.perf_cpu_time_max_percent = 1
 _EOF_
 
 /sbin/sysctl -p
-
-# Now we setup the firewall rules
-echo iptables-persistent iptables-persistent/autosave_v4 boolean false | sudo debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
-
-apt-get install -y iptables-persistent netfilter-persistent
-
-if [ ! -d "/etc/iptables/" ] ; then
-    mkdir -p /etc/iptables/
-fi
-
-cat << _EOF_ >> /etc/iptables/rules.v4
-*filter
-:INPUT DROP [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-
--A INPUT -i lo -j ACCEPT
--A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m tcp --dport ssh -j ACCEPT
--A INPUT -p tcp -m tcp --dport http -j ACCEPT
--A INPUT -p tcp -m tcp --dport https -j ACCEPT
-
--A OUTPUT -o lo -j ACCEPT
--A OUTPUT -p icmp -j ACCEPT
--A OUTPUT -m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT
-
-COMMIT
-_EOF_
-
-systemctl restart netfilter-persistent.service
