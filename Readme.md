@@ -5,7 +5,7 @@ A set of ready-to-build minimal vagrant boxes.
 ## Presentation
 
 This project contains all the necessary recipes to build (quite) minimal vagrant boxes. The available distributions are:
-* debian 8 and 9
+* debian 8,9,10 and 11
 * centos 7
 
 First, packer will download the minimal ISO, and run the installation process. Then a set of scripts will package the VM to be able to run under vagrant, and also to remove useless packages. Finally, the VM will be exported under the vagrant box format.
@@ -22,8 +22,8 @@ Once all the required dependencies installed, you can start to build the distrib
 For a debian box:
 
     cd vagrant_boxes/debian
-    packer build -var-file=[jessie|stretch|buster].json build-debian.json
-    vagrant box add --name=debian[8|9|10] output/vagrant/debian[8|9|10].box
+    packer build -var-file=[jessie|stretch|buster|bullseye].json build-debian.json
+    vagrant box add --name=debian[8|9|10|11] output/vagrant/debian[8|9|10|11].box
 
 For a centos box:
 
