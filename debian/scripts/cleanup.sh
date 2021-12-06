@@ -18,6 +18,11 @@ nfs-common
 libnfsidmap2
 rpcbind
 powertop
+eject
+emacsen-common
+task-laptop
+libx11-6
+task-english
 EOF
 
 # If the  package is present then, delete it

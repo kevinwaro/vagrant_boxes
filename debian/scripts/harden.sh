@@ -85,3 +85,36 @@ kernel.perf_cpu_time_max_percent = 1
 _EOF_
 
 /sbin/sysctl -p
+
+# Add netfilter-persistent and set IPTables rules
+apt-get install -y netfilter-persistent
+mkdir -p /etc/iptables
+main_interface=$(ip a s | grep ^2 | awk '{ print $2 }' | tr -d ':')
+
+cat << _EOF_ >> /etc/iptables/rules.v4
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT DROP [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+-A INPUT -m state --state INVALID -j DROP
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i ${main_interface} -m comment --comment "STANDARD SERVICES ACCESS"
+-A INPUT -i ${main_interface} -p udp -m multiport --sport 53,123 -j ACCEPT
+-A INPUT -i ${main_interface} -p tcp -m multiport --dport 22,80,443 --syn -m state --state NEW -j ACCEPT
+-A INPUT -i ${main_interface} -m comment --comment "FILTER_INPUT END_MARKER"
+-A OUTPUT -o lo -j ACCEPT
+-A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+-A OUTPUT -m state --state INVALID -j DROP
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m comment --comment "STANDARD SERVICES ACCESS"
+-A OUTPUT -p tcp -m multiport --dport 22,25,43,80,443 --syn -m state --state NEW -j ACCEPT
+-A OUTPUT -p udp -m multiport --dport 123,53 -j ACCEPT
+-A OUTPUT -m comment --comment "FILTER_OUTPUT END_MARKER"
+COMMIT
+
+_EOF_
+
+systemctl enable netfilter-persistent.service
+systemctl restart netfilter-persistent.service
